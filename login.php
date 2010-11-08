@@ -1,0 +1,63 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Login</title>
+<link rel = "stylesheet" type = "text/css" href = "style.css" />
+</head>
+<body>
+<div id="wrap">
+<?php include("header.php"); ?>
+<?php
+	include ("db_connect.php");
+	include ("recommender.php");
+	$name = $_POST['username'];
+	$pw = $_POST['pw'];
+	
+	$values_query = "select * from userCharacters join characters where userId = '$name' and userChar = charName";
+	$result = mysqli_query($db, $values_query)
+	or die ("You inserted an incorrect username.");
+	
+	while ($row = mysqli_fetch_assoc($result)) {
+		$userName = $row['userId'];
+		$lvl = $row['lvl'];
+		$race = $row['race'];
+		$sex = $row['sex'];
+		$class = $row['charClass'];
+		$faction = $row['Faction'];
+		$hk = $row['HK'];
+		
+	}
+	
+	$userArray = array();
+	array_push($userArray, $userName, $lvl, $race, $sex, $class, $faction, $hk);
+	
+	$recommend = new recommender($userArray);
+	$query = "select * from userCharacters join characters on userChar = charName";
+	$result = mysqli_query($db, $query)
+	or die ("No rows");
+	
+	while ($row = mysqli_fetch_assoc($result)) {
+		if ($row['userId'] <> $name) {
+			$userName = $row['userId'];
+			$lvl = $row['lvl'];
+			$race = $row['race'];
+			$sex = $row['sex'];
+			$class = $row['charClass'];
+			$faction = $row['Faction'];
+			$hk = $row['HK'];
+			$otherUserArray = array();
+			array_push($otherUserArray, $userName, $lvl, $race, $sex, $class, $faction, $hk);
+			$recommend->recommend($otherUserArray);
+		}
+	}
+	
+	$bestUser = $recommend->getBestPersonUsername();
+	
+	echo "<h1>The following user is closest to you is</h1>";
+	echo "<h1>$bestUser</h1>";
+	?>
+	</div>
+</body>
+</html>
