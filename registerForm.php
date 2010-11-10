@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -7,6 +8,7 @@
 </head>
 <body>
 <div id="wrap">
+<?php Echo "<h1>Welcome ".$_SESSION['currentUser']."</h1>"; ?>
 <?php include("header.php") ?>
  <h1>Please create an account by filling in the required sections.</h1>
   <form method="post" action="register.php">
